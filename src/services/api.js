@@ -1,11 +1,17 @@
 import axios from "axios";
+import { getToken } from "../utils/auth";
 
-const api = axios.create({
-    baseURL: "http://localhost:5000/api/v1",
-    });
+const API = axios.create({
+   baseURL: "http://localhost:5000/api/v1"
+});
 
-    export const getProducts = () => api.get("/products");
-export const addProduct = (data) => api.post("/products", data);
-export const deleteProduct = (id) => api.delete(`/products/${id}`);
-export const getProductById = (id) => api.get(`/products/${id}`);
-    
+// Attach token automatically
+API.interceptors.request.use((config) => {
+   const token = getToken();
+   if (token) {
+       config.headers.Authorization = `Bearer ${token}`;
+   }
+   return config;
+});
+
+export default API;
